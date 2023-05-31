@@ -70,13 +70,39 @@ app.post("/user/:id/task/uptade_status", (req, res) => {
 });
 
 app.post("/user/:id/task/new_task/", (req, res) => {
-    //console.log(req.params.id);
-    //console.log(req.body.id_task);
-    //console.log(req.body.status);
     connection.query("INSERT INTO tasks VALUES(0, ?, ?, 'new', NOW(), NOW())", [req.body.id_user, req.body.task_text], (err, results) => {
         if (err) {
             res.send('MySQL connection error', err.message)
         }
     })
     res.json('ok');
+});
+
+app.get("/user/task/get_task/:id_task", (req, res) => {
+
+    connection.query("SELECT * FROM tasks WHERE id = ?", [req.params.id_task], (err, results) => {
+        if (err) {
+            res.send('MySQL connection error', err.message)
+        }
+        res.json(results);
+    })
+});
+
+app.post("/user/task/update_task", (req, res) => {
+    connection.query("UPDATE tasks SET task_text = ?, updated_at = NOW() WHERE id = ?", [req.body.task_text, req.body.id_task], (err, results) => {
+        if (err) {
+            res.send('MySQL connection error', err.message)
+        }
+    })
+    res.json('ok');
+});
+
+app.get("/user/task/delete_task/:id_task", (req, res) => {
+
+    connection.query("DELETE FROM tasks WHERE id = ?", [req.params.id_task], (err, results) => {
+        if (err) {
+            res.send('MySQL connection error', err.message)
+        }
+        res.json(results);
+    })
 });

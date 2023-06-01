@@ -47,8 +47,16 @@ app.get("/user/:id", (req, res) => {
 
 });
 
-app.get("/user/:id/tasks/", (req, res) => {
-    connection.query("SELECT * FROM tasks WHERE id_users = ?", [req.params.id], (err, results) => {
+app.get("/user/:id/tasks/:status", (req, res) => {
+    let select_task = ''
+    if (req.params.status == 'all') {
+        select_task = "SELECT * FROM tasks WHERE id_users = ?"
+        list_parament = [req.params.id]
+    } else {
+        select_task = "SELECT * FROM tasks WHERE id_users = ? AND task_status = ?"
+        list_parament = [req.params.id, req.params.status]
+    }
+    connection.query(select_task, list_parament, (err, results) => {
         if (err) {
             res.send('MySQL connection error', err.message)
         }
